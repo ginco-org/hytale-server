@@ -1,0 +1,65 @@
+# Production Hytale Server
+# Configuration for a production server with backups and monitoring
+
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-production
+    restart: unless-stopped
+
+    ports:
+      - "5520:5520/udp"
+
+    environment:
+      # Server settings
+      EULA: "true"
+      MEMORY: "8G"
+
+      # Performance
+      JVM_OPTS: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M"
+
+      # Backups
+      ENABLE_BACKUP: "true"
+      BACKUP_FREQUENCY: "30"
+      BACKUP_DIR: "/data/backups"
+
+      # Security
+      ENABLE_SENTRY: "false"
+      AUTH_MODE: "authenticated"
+
+      # Performance features
+      ENABLE_AOT_CACHE: "true"
+
+    volumes:
+      - ./data:/data
+      - ./backups:/data/backups
+
+    deploy:
+      resources:
+        limits:
+          memory: 10G
+          cpus: '4'
+        reservations:
+          memory: 8G
+          cpus: '2'
+
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -an | grep -q 5520 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Usage:
+# 1. Ensure backups directory exists: mkdir -p backups
+# 2. Copy this file to your directory
+# 3. Run: docker-compose -f production-server.yml up -d
+# 4. Monitor: docker-compose -f production-server.yml logs -f

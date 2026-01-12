@@ -1,0 +1,44 @@
+# Offline Testing Server
+# Configuration for local testing without authentication
+
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-offline
+    restart: unless-stopped
+
+    ports:
+      - "5520:5520/udp"
+
+    environment:
+      EULA: "true"
+      MEMORY: "4G"
+
+      # Offline mode - no authentication required
+      AUTH_MODE: "offline"
+
+      # Disable Sentry for testing
+      ENABLE_SENTRY: "false"
+
+      # Allow ops for testing
+      ALLOW_OP: "true"
+
+    volumes:
+      - ./data:/data
+
+# Usage:
+# 1. Run: docker-compose -f offline-testing.yml up -d
+# 2. Server starts without authentication
+# 3. No player validation or service API access
+#
+# Warning: Only use offline mode for:
+# - Local testing
+# - Development
+# - LAN parties
+#
+# Do NOT use offline mode for public servers as it:
+# - Disables player validation
+# - Disables service API access
+# - May violate Terms of Service

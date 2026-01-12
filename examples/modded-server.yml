@@ -1,0 +1,38 @@
+# Modded Hytale Server
+# Configuration for a server with mods
+
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-modded
+    restart: unless-stopped
+
+    ports:
+      - "5520:5520/udp"
+
+    environment:
+      EULA: "true"
+      MEMORY: "8G"
+      TYPE: "custom"
+
+    volumes:
+      - ./data:/data
+      - ./mods:/mods:ro  # Read-only mod directory
+
+    deploy:
+      resources:
+        limits:
+          memory: 10G
+        reservations:
+          memory: 8G
+
+# Usage:
+# 1. Create a mods directory: mkdir -p mods
+# 2. Download mods from CurseForge or other sources
+# 3. Place .jar or .zip files in the mods directory
+# 4. Run: docker-compose -f modded-server.yml up -d
+# 5. Mods will be automatically installed on startup
+
+# Note: Modded servers typically require more memory

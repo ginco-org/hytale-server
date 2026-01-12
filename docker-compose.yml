@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-server
+    restart: unless-stopped
+
+    # IMPORTANT: Hytale uses QUIC over UDP, not TCP
+    ports:
+      - "5520:5520/udp"
+
+    # Environment variables
+    environment:
+      # REQUIRED: Accept the EULA
+      EULA: "false"  # Change to "true" to accept
+
+      # Memory allocation
+      MEMORY: "4G"
+
+      # Server version
+      HYTALE_VERSION: "latest"  # or "pre-release"
+
+      # Network binding
+      BIND_ADDRESS: "0.0.0.0:5520"
+
+      # Authentication mode: "authenticated" or "offline"
+      AUTH_MODE: "authenticated"
+
+      # Authentication tokens (for automated setups)
+      # Leave empty for interactive device authentication
+      # HYTALE_SERVER_SESSION_TOKEN: ""
+      # HYTALE_SERVER_IDENTITY_TOKEN: ""
+      # OWNER_UUID: ""
+
+      # Server options
+      ENABLE_AOT_CACHE: "true"
+      ENABLE_SENTRY: "false"
+      ALLOW_OP: "true"
+
+      # Backups
+      ENABLE_BACKUP: "false"
+      BACKUP_FREQUENCY: "30"  # minutes
+
+      # JVM options
+      JVM_OPTS: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200"
+
+      # Server type
+      TYPE: "vanilla"  # vanilla or custom (for mods)
+
+    # Volumes
+    volumes:
+      - ./data:/data
+      - ./mods:/mods:ro  # Optional: for mod installation
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+        reservations:
+          memory: 4G
+
+    # Health check (optional)
+    # healthcheck:
+    #   test: ["CMD-SHELL", "netstat -an | grep -q 5520 || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+
+# Optional: Backup service
+#   backup:
+#     image: offen/docker-volume-backup:v2
+#     restart: unless-stopped
+#     volumes:
+#       - ./data:/backup/hytale-data:ro
+#       - ./backups:/archive
+#     environment:
+#       BACKUP_FILENAME: "hytale-backup-%Y-%m-%dT%H-%M-%S.tar.gz"
+#       BACKUP_CRON_EXPRESSION: "0 2 * * *"
+#       BACKUP_RETENTION_DAYS: "7"

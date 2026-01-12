@@ -1,0 +1,53 @@
+# Game Server Provider (GSP) Automated Deployment
+# Configuration for automated server provisioning with token authentication
+
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-automated
+    restart: unless-stopped
+
+    ports:
+      - "5520:5520/udp"
+
+    environment:
+      # Server settings
+      EULA: "true"
+      MEMORY: "6G"
+
+      # Automated authentication (for GSPs with unlimited_servers entitlement)
+      HYTALE_SERVER_SESSION_TOKEN: "${SESSION_TOKEN}"
+      HYTALE_SERVER_IDENTITY_TOKEN: "${IDENTITY_TOKEN}"
+      OWNER_UUID: "${OWNER_UUID}"
+
+      # Server options
+      ENABLE_AOT_CACHE: "true"
+      ENABLE_SENTRY: "false"
+      ALLOW_OP: "true"
+
+    volumes:
+      - ./data:/data
+
+    env_file:
+      - .env  # Load tokens from .env file
+
+# Usage for GSPs:
+# 1. Obtain your GSP entitlement from Hytale Support
+# 2. Use the Device Code Flow to get initial tokens
+# 3. Call /my-account/get-profiles to get OWNER_UUID
+# 4. Call /game-session/new to get SESSION_TOKEN and IDENTITY_TOKEN
+# 5. Create .env file with:
+#    SESSION_TOKEN=your_session_token
+#    IDENTITY_TOKEN=your_identity_token
+#    OWNER_UUID=your_owner_uuid
+# 6. Run: docker-compose -f gsp-automated.yml up -d
+#
+# Note: Tokens expire in 1 hour. Implement token refresh in your provisioning system.
+# See: https://support.hytale.com/hc/en-us/articles/45328341414043
+
+# Example .env file:
+# SESSION_TOKEN=eyJhbGciOiJFZERTQSIs...
+# IDENTITY_TOKEN=eyJhbGciOiJFZERTQSIs...
+# OWNER_UUID=123e4567-e89b-12d3-a456-426614174000

@@ -1,0 +1,26 @@
+# Basic Hytale Server
+# Minimal configuration for a simple server
+
+version: '3.8'
+
+services:
+  hytale:
+    image: gincoorg/hytale-server:latest
+    container_name: hytale-basic
+    restart: unless-stopped
+
+    ports:
+      - "5520:5520/udp"
+
+    environment:
+      EULA: "true"
+      MEMORY: "4G"
+
+    volumes:
+      - ./data:/data
+
+# Usage:
+# 1. Copy this file to your directory
+# 2. Run: docker-compose -f basic-server.yml up -d
+# 3. Check logs: docker-compose -f basic-server.yml logs -f
+# 4. Follow the authentication URL in the logs

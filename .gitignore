@@ -1,0 +1,35 @@
+# Data directories
+data/
+backups/
+mods/
+downloads/
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Build artifacts
+*.class
+*.jar
+*.war
+*.ear
