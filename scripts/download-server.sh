@@ -12,7 +12,7 @@ if [ ! -f /downloads/hytale-downloader ]; then
   cd /downloads
 
   wget -q https://downloader.hytale.com/hytale-downloader.zip -O hytale-downloader.zip
-  unzip -q hytale-downloader.zip
+  unzip -o -q hytale-downloader.zip
   chmod +x hytale-downloader
   rm hytale-downloader.zip
 
@@ -37,7 +37,7 @@ fi
 
 # Extract to temporary location
 echo "Extracting game files..."
-unzip -q game.zip -d /tmp/hytale-extract
+unzip -o -q game.zip -d /tmp/hytale-extract
 
 # Copy server files to /data
 echo "Installing server files..."
