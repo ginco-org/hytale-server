@@ -69,5 +69,8 @@ if [ ! -f /data/Assets.zip ]; then
   exit 1
 fi
 
+# Fix ownership of downloaded files
+chown -R hytale:hytale /data 2>/dev/null || true
+
 echo "Hytale Server files downloaded successfully!"
 echo "Version: $(java -jar /data/HytaleServer.jar --version 2>&1 || echo 'unknown')"

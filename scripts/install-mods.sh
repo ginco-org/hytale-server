@@ -11,6 +11,7 @@ if [ -d /mods ] && [ "$(ls -A /mods 2>/dev/null)" ]; then
   echo "Installing mods from /mods directory..."
   cp -v /mods/*.jar /data/mods/ 2>/dev/null || true
   cp -v /mods/*.zip /data/mods/ 2>/dev/null || true
+  chown -R hytale:hytale /data/mods 2>/dev/null || true
   echo "Mods installed."
 else
   echo "No mods to install."

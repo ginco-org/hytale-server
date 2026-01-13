@@ -13,6 +13,7 @@ RUN apt-get update && \
     jq \
     net-tools \
     sudo \
+    su-exec \
     && rm -rf /var/lib/apt/lists/*
 
 # Create user and directories
@@ -51,8 +52,5 @@ EXPOSE 5520/udp
 # Volumes for persistent data
 VOLUME ["/data"]
 
-# Switch to hytale user
-USER hytale
-
-# Entrypoint
+# Entrypoint (runs as root, then switches to hytale user)
 ENTRYPOINT ["/scripts/entrypoint.sh"]

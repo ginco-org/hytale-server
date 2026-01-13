@@ -19,8 +19,14 @@ fi
 
 echo "EULA accepted."
 
+# Fix permissions on /data directory
+echo "Fixing permissions on /data..."
+chown -R hytale:hytale /data 2>/dev/null || true
+chown hytale:hytale /downloads 2>/dev/null || true
+
 # Create necessary directories
 mkdir -p /data/{logs,mods,universe,backups,.cache}
+chown -R hytale:hytale /data/{logs,mods,universe,backups,.cache} 2>/dev/null || true
 
 # Download server files if not present
 if [ ! -f /data/HytaleServer.jar ]; then
@@ -111,4 +117,5 @@ echo "Starting Hytale Server..."
 echo "Command: java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}"
 echo ""
 
-exec java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}
+# Switch to hytale user and start server
+exec su-exec hytale java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}
