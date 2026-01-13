@@ -13,7 +13,7 @@ RUN apt-get update && \
     jq \
     net-tools \
     sudo \
-    su-exec \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # Create user and directories

@@ -118,4 +118,4 @@ echo "Command: java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}"
 echo ""
 
 # Switch to hytale user and start server
-exec su-exec hytale java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}
+exec gosu hytale java ${JVM_ARGS} -jar HytaleServer.jar ${SERVER_ARGS}
