@@ -13,6 +13,12 @@ if [ ! -f /downloads/hytale-downloader ]; then
 
   wget -q https://downloader.hytale.com/hytale-downloader.zip -O hytale-downloader.zip
   unzip -o -q hytale-downloader.zip
+
+  # Find the Linux AMD64 binary and rename it
+  if [ -f hytale-downloader-linux-amd64 ]; then
+    mv hytale-downloader-linux-amd64 hytale-downloader
+  fi
+
   chmod +x hytale-downloader
   rm hytale-downloader.zip
 
