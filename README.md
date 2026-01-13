@@ -1,7 +1,6 @@
 # Hytale Server Docker Image
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/gincoorg/hytale-server.svg)](https://hub.docker.com/r/gincoorg/hytale-server)
-[![Docker Stars](https://img.shields.io/docker/stars/gincoorg/hytale-server.svg)](https://hub.docker.com/r/gincoorg/hytale-server)
+[![GitHub Container Registry](https://img.shields.io/badge/ghcr.io-ginco--org%2Fhytale--server-blue)](https://github.com/ginco-org/hytale-server/pkgs/container/hytale-server)
 [![GitHub Issues](https://img.shields.io/github/issues/ginco-org/hytale-server.svg)](https://github.com/ginco-org/hytale-server/issues)
 
 A Docker image for running Hytale dedicated servers, inspired by [itzg/minecraft-server](https://github.com/itzg/docker-minecraft-server).
@@ -17,7 +16,7 @@ version: '3.8'
 
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     container_name: hytale-server
     restart: unless-stopped
     ports:
@@ -52,7 +51,7 @@ docker run -d \
   -e EULA=true \
   -e MEMORY=4G \
   -v $(pwd)/data:/data \
-  gincoorg/hytale-server:latest
+  ghcr.io/ginco-org/hytale-server:latest
 ```
 
 ## Important Notes
@@ -213,7 +212,7 @@ Copy mods directly to `./data/mods/` directory.
 ```yaml
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     ports:
       - "5520:5520/udp"
     environment:
@@ -228,7 +227,7 @@ services:
 ```yaml
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     ports:
       - "5520:5520/udp"
     environment:
@@ -245,7 +244,7 @@ services:
 ```yaml
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     ports:
       - "5520:5520/udp"
     environment:
@@ -262,7 +261,7 @@ services:
 ```yaml
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     ports:
       - "5520:5520/udp"
     environment:
@@ -278,7 +277,7 @@ services:
 ```yaml
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     ports:
       - "5520:5520/udp"
     environment:
@@ -296,7 +295,7 @@ services:
 ```bash
 git clone https://github.com/ginco-org/hytale-server.git
 cd hytale-server
-docker build -t gincoorg/hytale-server:latest .
+docker build -t ghcr.io/ginco-org/hytale-server:latest .
 ```
 
 ## Resources
