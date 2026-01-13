@@ -71,23 +71,24 @@ if [ "$ENABLE_BACKUP" = "true" ]; then
   SERVER_ARGS="${SERVER_ARGS} --backup --backup-dir ${BACKUP_DIR} --backup-frequency ${BACKUP_FREQUENCY}"
 fi
 
-# Handle authentication tokens
-if [ -n "$HYTALE_SERVER_SESSION_TOKEN" ] && [ -n "$HYTALE_SERVER_IDENTITY_TOKEN" ]; then
+# Handle authentication
+if [ "$AUTH_MODE" = "offline" ]; then
+  echo "Running in offline mode (no authentication)."
+elif [ -n "$HYTALE_SERVER_SESSION_TOKEN" ] && [ -n "$HYTALE_SERVER_IDENTITY_TOKEN" ]; then
   echo "Using provided authentication tokens."
-  export HYTALE_SERVER_SESSION_TOKEN
-  export HYTALE_SERVER_IDENTITY_TOKEN
+else
+  # No tokens provided - run device auth flow
+  source /scripts/authenticate.sh
+fi
+
+# Add authentication arguments if we have tokens
+if [ -n "$HYTALE_SERVER_SESSION_TOKEN" ] && [ -n "$HYTALE_SERVER_IDENTITY_TOKEN" ]; then
+  SERVER_ARGS="${SERVER_ARGS} --session-token ${HYTALE_SERVER_SESSION_TOKEN}"
+  SERVER_ARGS="${SERVER_ARGS} --identity-token ${HYTALE_SERVER_IDENTITY_TOKEN}"
 
   if [ -n "$OWNER_UUID" ]; then
     SERVER_ARGS="${SERVER_ARGS} --owner-uuid ${OWNER_UUID}"
   fi
-elif [ "$AUTH_MODE" = "offline" ]; then
-  echo "Running in offline mode (no authentication)."
-else
-  echo ""
-  echo "WARNING: No authentication tokens provided and not in offline mode."
-  echo "You will need to authenticate the server after startup."
-  echo "Use '/auth login device' in the server console."
-  echo ""
 fi
 
 # Install mods if TYPE is set

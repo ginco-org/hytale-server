@@ -34,13 +34,13 @@ services:
 docker-compose up -d
 ```
 
-3. Authenticate the server (if not using tokens):
+3. Follow the authentication prompts in the logs:
 
 ```bash
 docker-compose logs -f
 ```
 
-Follow the authentication URL displayed in the logs.
+The server will display a URL and code - visit the URL to authorize the server.
 
 ### Using Docker CLI
 
@@ -133,30 +133,42 @@ Hytale uses the **QUIC protocol over UDP**, not TCP. Make sure to:
 
 ## Authentication
 
-### Method 1: Interactive Device Flow (Default)
+### Method 1: Automatic Device Flow (Default - Recommended)
 
-1. Start the server without tokens
-2. Check the logs for the authentication URL
-3. Visit the URL and enter the provided code
-4. Server will authenticate automatically
+The container automatically initiates OAuth2 device authentication on startup when no tokens are provided.
 
+1. Start the server:
+```bash
+docker-compose up -d
+```
+
+2. Watch the logs:
 ```bash
 docker-compose logs -f
 ```
 
-Example output:
+3. You'll see authentication instructions:
 ```
-===================================================================
+====================================================================
 DEVICE AUTHORIZATION
-===================================================================
-Visit: https://accounts.hytale.com/device
-Enter code: ABCD-1234
-===================================================================
+====================================================================
+Visit: https://accounts.hytale.com/device?user_code=ABCD-1234
+
+Or go to: https://accounts.hytale.com/device
+And enter code: ABCD-1234
+====================================================================
+Waiting for authorization (expires in 900 seconds)...
 ```
 
-### Method 2: Token Passthrough (Automated)
+4. Open the URL in your browser and authorize the server
 
-For automated deployments, provide authentication tokens:
+5. The server will automatically receive the tokens and start
+
+**That's it!** No manual token management required.
+
+### Method 2: Token Passthrough (Advanced)
+
+For server hosting providers or automated deployments where you manage tokens externally:
 
 ```yaml
 environment:
@@ -165,7 +177,9 @@ environment:
   OWNER_UUID: "your-profile-uuid"
 ```
 
-See the [Server Provider Authentication Guide](https://support.hytale.com/hc/en-us/articles/45328341414043) for details on obtaining tokens.
+When these environment variables are provided, the automatic device flow is skipped.
+
+See the [Server Provider Authentication Guide](https://support.hytale.com/hc/en-us/articles/45328341414043) for details on obtaining and refreshing tokens programmatically.
 
 ### Method 3: Offline Mode
 
