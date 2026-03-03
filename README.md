@@ -135,7 +135,7 @@ Hytale uses the **QUIC protocol over UDP**, not TCP. Make sure to:
 
 ### Method 1: Automatic Device Flow (Default - Recommended)
 
-The container automatically initiates OAuth2 device authentication on startup when no tokens are provided.
+The container automatically initiates OAuth2 device authentication on first startup. Credentials are then cached in the `/data` volume so subsequent restarts authenticate silently without any user interaction.
 
 1. Start the server:
 ```bash
@@ -147,7 +147,7 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-3. You'll see authentication instructions:
+3. On first run you'll see authentication instructions:
 ```
 ====================================================================
 DEVICE AUTHORIZATION
@@ -162,9 +162,13 @@ Waiting for authorization (expires in 900 seconds)...
 
 4. Open the URL in your browser and authorize the server
 
-5. The server will automatically receive the tokens and start
+5. The server starts and credentials are saved to `/data/.auth/tokens.json`
 
-**That's it!** No manual token management required.
+On every subsequent restart the container uses the cached refresh token to obtain a new session automatically — **no browser interaction needed**.
+
+> **Note:** The refresh token is valid for ~30 days. If it expires or is revoked (e.g. you change your Hytale password), simply delete `/data/.auth/tokens.json` and the device flow will prompt again on next startup.
+>
+> `/data/.auth/tokens.json` contains sensitive credentials. It is created with mode `600` (owner-readable only), but ensure your `/data` volume is not world-readable on the host.
 
 ### Method 2: Token Passthrough (Advanced)
 
@@ -202,6 +206,8 @@ environment:
 | `/data/logs` | Server logs |
 | `/data/backups` | Automatic backups (if enabled) |
 | `/data/.cache` | AOT cache and optimized files |
+| `/data/.auth/tokens.json` | Cached OAuth2 credentials (mode 600) |
+| `/data/.version` | Installed server version (used for update detection) |
 
 ## Installing Mods
 

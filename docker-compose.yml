@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   hytale:
-    image: gincoorg/hytale-server:latest
+    image: ghcr.io/ginco-org/hytale-server:latest
     container_name: hytale-server
     restart: unless-stopped
 

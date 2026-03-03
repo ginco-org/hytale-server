@@ -28,13 +28,8 @@ chown hytale:hytale /downloads 2>/dev/null || true
 mkdir -p /data/{logs,mods,universe,backups,.cache}
 chown -R hytale:hytale /data/{logs,mods,universe,backups,.cache} 2>/dev/null || true
 
-# Download server files if not present
-if [ ! -f /data/HytaleServer.jar ]; then
-  echo "Server files not found. Downloading..."
-  /scripts/download-server.sh
-else
-  echo "Server files found."
-fi
+# Download server files if not present or version changed
+/scripts/download-server.sh
 
 # Build JVM arguments
 JVM_ARGS="-Xms${MEMORY} -Xmx${MEMORY} ${JVM_OPTS}"

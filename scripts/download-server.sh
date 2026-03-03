@@ -6,6 +6,18 @@ echo "Downloading Hytale Server files..."
 # Create downloads directory
 mkdir -p /downloads
 
+VERSION_FILE="/data/.version"
+
+# Re-download if server files are missing or HYTALE_VERSION has changed
+if [ -f /data/HytaleServer.jar ] && [ -f "$VERSION_FILE" ]; then
+  INSTALLED_VERSION=$(cat "$VERSION_FILE")
+  if [ "$INSTALLED_VERSION" = "$HYTALE_VERSION" ]; then
+    echo "Server files already present for version '${HYTALE_VERSION}', skipping download."
+    exit 0
+  fi
+  echo "Version change detected (installed: '${INSTALLED_VERSION}', requested: '${HYTALE_VERSION}'). Re-downloading..."
+fi
+
 # Download hytale-downloader if not present
 if [ ! -f /downloads/hytale-downloader ]; then
   echo "Downloading hytale-downloader CLI..."
@@ -74,6 +86,9 @@ if [ ! -f /data/Assets.zip ]; then
   echo "ERROR: Assets.zip not found after download!"
   exit 1
 fi
+
+# Record installed version
+echo "$HYTALE_VERSION" > "$VERSION_FILE"
 
 # Fix ownership of downloaded files
 chown -R hytale:hytale /data 2>/dev/null || true

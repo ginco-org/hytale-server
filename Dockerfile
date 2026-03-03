@@ -12,7 +12,6 @@ RUN apt-get update && \
     unzip \
     jq \
     net-tools \
-    sudo \
     gosu \
     && rm -rf /var/lib/apt/lists/*
 
