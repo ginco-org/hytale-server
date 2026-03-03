@@ -46,11 +46,13 @@ if [ "$HYTALE_VERSION" != "latest" ]; then
 fi
 
 # Download the game files
+# Set HOME=/data so the downloader writes its credential cache to /data/.hytale-downloader-credentials.json,
+# which is inside the persistent volume and survives container restarts and image rebuilds.
 echo "Downloading Hytale ${HYTALE_VERSION}..."
 if [ -n "$VERSION_ARG" ]; then
-  ./hytale-downloader ${VERSION_ARG} -download-path game.zip
+  HOME=/data ./hytale-downloader ${VERSION_ARG} -download-path game.zip
 else
-  ./hytale-downloader -download-path game.zip
+  HOME=/data ./hytale-downloader -download-path game.zip
 fi
 
 # Extract to temporary location

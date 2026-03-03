@@ -147,28 +147,36 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-3. On first run you'll see authentication instructions:
+3. On first run you will be prompted to authorize **twice** — once for the game file downloader and once for the server itself. This is a Hytale security requirement; the two OAuth clients (`hytale-downloader` and `hytale-server`) are separate and cannot share tokens.
+
 ```
 ====================================================================
-DEVICE AUTHORIZATION
+DEVICE AUTHORIZATION  (1 of 2 — downloader)
 ====================================================================
 Visit: https://accounts.hytale.com/device?user_code=ABCD-1234
-
-Or go to: https://accounts.hytale.com/device
-And enter code: ABCD-1234
+...
 ====================================================================
-Waiting for authorization (expires in 900 seconds)...
+DEVICE AUTHORIZATION  (2 of 2 — server)
+====================================================================
+Visit: https://accounts.hytale.com/device?user_code=WXYZ-5678
+...
 ```
 
-4. Open the URL in your browser and authorize the server
+4. Open each URL in your browser and authorize when prompted
 
-5. The server starts and credentials are saved to `/data/.auth/tokens.json`
+5. The server starts; both credential sets are saved to `/data`
 
-On every subsequent restart the container uses the cached refresh token to obtain a new session automatically — **no browser interaction needed**.
+**After the first run, no further browser interaction is needed.** Both the downloader and server cache their credentials in the persistent `/data` volume:
 
-> **Note:** The refresh token is valid for ~30 days. If it expires or is revoked (e.g. you change your Hytale password), simply delete `/data/.auth/tokens.json` and the device flow will prompt again on next startup.
+- Restarts reuse cached tokens silently
+- Server version upgrades reuse the downloader credentials (no re-auth)
+- Credentials auto-refresh; you only need to re-authenticate if a token is explicitly revoked or expires (~30 days)
+
+> **To force re-authentication**, delete the relevant file and restart:
+> - Server: `rm data/.auth/tokens.json`
+> - Downloader: `rm data/.hytale-downloader-credentials.json`
 >
-> `/data/.auth/tokens.json` contains sensitive credentials. It is created with mode `600` (owner-readable only), but ensure your `/data` volume is not world-readable on the host.
+> Both files contain sensitive credentials and are created with restricted permissions. Ensure your `/data` volume is not world-readable on the host.
 
 ### Method 2: Token Passthrough (Advanced)
 
@@ -206,7 +214,8 @@ environment:
 | `/data/logs` | Server logs |
 | `/data/backups` | Automatic backups (if enabled) |
 | `/data/.cache` | AOT cache and optimized files |
-| `/data/.auth/tokens.json` | Cached OAuth2 credentials (mode 600) |
+| `/data/.auth/tokens.json` | Cached server OAuth2 credentials (mode 600) |
+| `/data/.hytale-downloader-credentials.json` | Cached downloader OAuth2 credentials |
 | `/data/.version` | Installed server version (used for update detection) |
 
 ## Installing Mods
