@@ -51,5 +51,8 @@ EXPOSE 5520/udp
 # Volumes for persistent data
 VOLUME ["/data"]
 
-# Entrypoint (runs as root, then switches to hytale user)
+# Run as non-root
+USER hytale
+
+# Entrypoint
 ENTRYPOINT ["/scripts/entrypoint.sh"]
